@@ -5,22 +5,6 @@ import sys
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
-'''
-<p class="articleBody_abstractText"> = ACS
-<div class="abstract-group"> = wiley
-<meta name="citation_abstract" = plos
-<div class="Abstracts = Elsevier science direct
-<meta name="description" = MDPI
-
->Abstract</h or >Abstract</b = universal start marker for all journals
-</div> = universal end marker for all journals
-{~} Make sure to pick the </div> marker such that there are enough characters between the start and end markers.
-{~} If insufficient number of characters are present between the two markers, search for the next end marker.
-{~} Check if '</p>', <p>' are present (separately or together) between the start and end markers. If they are not present, it means abstract is not present in the text in-between.
-
-Sometimes the universal start marker is not present in some websites. In that case, consider '>Abstract' or 'Abstract:' as the universal start marker if it is present only once in the whole HTML text.
-'''
-
 def get_paperinfo (paper_url):
 	response = requests.get(url, headers = headers)
 	if response.status_code != 200:
@@ -30,27 +14,6 @@ def get_paperinfo (paper_url):
 	paper_doc = BeautifulSoup (response.text,'html.parser')
 
 	return paper_doc
-
-# headers = {'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'}
-# searchText = "Molecular dynamics simulations"
-# searchText = searchText.replace (" ", "+")
-
-# links = []
-
-# for startNumber in range (0, 500, 10):
-# 	print ("Collecting {} to {}".format (startNumber, startNumber+10))
-# 	searchURL = ("https://scholar.google.com/scholar?start={}&q={}".format (startNumber, searchText))
-# 	response = requests.get (searchURL, headers = headers)
-# 	doc = BeautifulSoup (response.text, 'html.parser')
-# 	linksTemp = doc.select ('a')
-
-# 	for linkTemp in linksTemp:
-# 		if linkTemp.get('href') != None:
-# 			if 'https://' in linkTemp.get('href'):
-# 				# print(linkTemp.get('href'))
-# 				if ("google" not in linkTemp.get('href') and ".pdf" not in linkTemp.get('href')):
-# 					links.append (linkTemp.get('href'))
-# print (links)
 
 def getLinks (keyWords):
 	headers = {'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36'}
@@ -62,7 +25,6 @@ def getLinks (keyWords):
 		success = 0
 		response = requests.get (searchURL, headers = headers, timeout = None)
 
-		# Reduces the chances of getting blocked by Google
 		sleep (1)
 		responseHTML = BeautifulSoup (response.text, 'html.parser')
 		linksTemp = responseHTML.select ('a')
@@ -86,14 +48,10 @@ def findNth (haystack, needle, n):
 def findImportance (link, keyWords, strongKeyWords):
 	options = Options()
 	options.headless = True
-	# options.add_argument("--window-size=1920,1080")
-	# options.add_argument("start-maximized")
 
-	# chrome_options = webdriver.ChromeOptions ()
 	try:
 		options.add_experimental_option ("prefs", {"profile.managed_default_content_settings.images": 2})
 		driver = webdriver.Chrome (options = options)
-		# driver.set_page_load_timeout (60)
 		driver.implicitly_wait(5)
 		driver.get (link)
 	except:
