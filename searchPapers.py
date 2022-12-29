@@ -64,7 +64,7 @@ def findImportance (link, keyWords, strongKeyWords):
 		startIndex = pageSource.find ("Abstract:")
 		pageSource = pageSource[startIndex:]
 
-		if (pageSource.count ("</div>") > 0):
+		if (pageSource.count ("<p>") > 0 and pageSource.count ("</p>") > 0):
 			endIndex = pageSource.find ("</div>")
 			nthFind = 1
 			endIndexCheck = 0
@@ -79,7 +79,7 @@ def findImportance (link, keyWords, strongKeyWords):
 			pageSource = pageSource[:endIndex]
 
 		# Format specifically for openscience.ub.uni-mainz.de
-		elif (pageSource.count ("</div") == 0 and pageSource.count ("</td></tr>") > 0):
+		elif (pageSource.count ("<p>") == 0 and pageSource.count ("</p>") == 0 and pageSource.count ("</td></tr>") > 0):
 			endIndex = pageSource.find ("</td></tr>")
 			pageSource = pageSource[:endIndex]
 
